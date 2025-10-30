@@ -116,19 +116,23 @@ Criar host no proxy: apontar `app.<meu-dominio>` → `http://<nome-do-servico>:<
 
 ### atualizar um app (CI/CD)
 
+{% raw %}
 ```bash
 git push origin main
 # pipeline executa: fetch, reset hard, compose up --build
 ```
+{% endraw %}
 
 ### diagnosticar rápido
 
+{% raw %}
 ```bash
 docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
 docker logs -n 200 <servico>
 docker network ls
 docker inspect <app>_default | jq '.[0].Containers | keys'
 ```
+{% endraw %}
 
 ## o que deu errado (e como corrigi)
 
