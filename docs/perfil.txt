@@ -1,0 +1,58 @@
+### **O Perfil de Vinicius: Um Retrato Profissional (Setembro de 2025)**
+
+#### **1. Perfil Geral**
+* **Nome:** Vinicius
+* **Idade:** 22 anos
+* **Localização:** São Paulo, SP
+* **Formação:** Cursando Engenharia de Software na FIAP, com formatura prevista para o final de 2026.
+
+#### **2. Situação Profissional Atual**
+* **Cargo:** Desenvolvedor Fullstack Júnior
+* **Empresa:** Frison Convenience (oficina de carros de luxo)
+* **Data de Início:** 07 de Abril de 2025
+* **Modelo de Trabalho:** 100% presencial na Vila Olímpia
+* **Salário Atual:** R$ 5.200,00/mês
+* **Equipe:** Composta por ele e um desenvolvedor sênior com 20 anos de experiência na empresa, que atua como seu mentor direto.
+* **Stack Principal:** Backend com Java/Spring Boot; Frontend com um framework proprietário baseado em JavaScript.
+* **Fluxo de Trabalho:** Recebe os designs de tela diretamente do dono da empresa (Marcos, ~80 anos) via Figma e é responsável pelo desenvolvimento completo das aplicações (fullstack).
+
+#### **3. Filosofia e Mentalidade**
+* **Foco e Disciplina:** Possui uma forte autodisciplina, estudando continuamente (inclusive no transporte público) e curando ativamente suas redes sociais para eliminar distrações ("cortar o bullshit") e focar em conteúdo técnico.
+* **"AI First":** Utiliza um sistema sofisticado e proativo com Inteligência Artificial. Ele não apenas gera código, mas usa múltiplas IAs para gerar, revisar e debater soluções, posicionando-se como o arquiteto e validador final. Usa a IA para acelerar a produtividade, a depuração (implementando logs e analisando erros) e para manter um alto padrão de qualidade e documentação.
+* **Respeito à Experiência:** Demonstra grande respeito pela hierarquia e pela experiência de seu sênior. Prefere ouvir, entender e aprender com o mentor a entrar em conflitos técnicos, mesmo quando tem uma opinião diferente.
+* **Ownership (Dono do Problema):** Assume total responsabilidade por suas entregas. Em caso de bugs, lidera a investigação, implementa as ferramentas necessárias (logs) e executa a correção.
+
+#### **4. Competências Técnicas (Hard Skills)**
+* **Divisão de Tempo:** Atua de forma equilibrada, com ~40% do tempo em backend, ~40% em frontend e ~10% em banco de dados.
+* **Backend:** Demonstra capacidade além do nível júnior. Já desenvolveu uma aplicação inteira do zero, desenhando schemas complexos de banco de dados e aplicando padrões de arquitetura (layered, vertical slice). Escreve testes unitários e de integração de forma consistente.
+* **Frontend:** Traduz designs do Figma para o código, mas também lida com tarefas de nível pleno, como gerenciamento de estado complexo, otimização de performance e criação de componentes reutilizáveis. **Gap:** Não possui o hábito de escrever testes para o frontend.
+* **Ferramentas:**
+    * **Git:** Nível básico para intermediário (`add`, `commit`, `push`, `reset`, `stash`). Não utiliza comandos mais avançados como `rebase` ou `cherry-pick`.
+    * **Banco de Dados:** Utiliza principalmente o ORM do Spring, mas já demonstrou capacidade de otimizar queries manualmente (e.g., com `JOIN FETCH`).
+    * **Terminal:** Sente-se muito confortável e prefere o uso da linha de comando.
+* **Fraqueza Autodeclarada:** Considera-se "péssimo com sintaxe", o que justifica seu uso intensivo de IA para gerar código boilerplate e acelerar a produção.
+
+#### **5. Competências Comportamentais (Soft Skills)**
+* **Comunicação:** Adapta sua comunicação de forma eficaz, evitando jargões técnicos ao falar com o dono da empresa e usando seu sênior como um canal estratégico para assuntos mais complexos.
+* **Recebimento de Feedback:** Reage de forma positiva e construtiva ao feedback, valorizando a experiência do sênior e buscando aprender com as decisões, em vez de defender seu ego.
+* **Networking:** **Gap Crítico.** Sua rede de contatos profissional é incipiente e limitada a grupos da faculdade. Não participa ativamente de comunidades online, meetups ou outros eventos da área.
+
+#### **6. Ambições e Objetivos de Carreira**
+* **Objetivo de Curto Prazo (até dez/2026):** Dobrar o salário atual, atingindo um patamar próximo a R$ 10.400/mês.
+* **Objetivo de Médio Prazo:** Tornar-se um "mercenário de elite" – um desenvolvedor de alto nível trabalhando remotamente para o mercado internacional e recebendo em moeda forte.
+* **Objetivo de Longo Prazo:** Empreender e fundar sua própria empresa de software.
+* **Habilidade Crítica (Inglês):** Nível de conversação avaliado em 7.5/10, sendo este o principal bloqueador para o objetivo de médio prazo. Leitura (10/10), escrita (10/10) e escuta (9/10) são avançadas.
+
+#### **7. Diagnóstico Estratégico: O "Dev Fantasma de Alto Desempenho"**
+Vinicius apresenta o perfil de um profissional com um "mundo interno" (habilidades técnicas, disciplina, ética de trabalho) muito desenvolvido, mas um "mundo externo" (presença pública, networking, portfólio) quase inexistente.
+
+* **Forças:**
+    * Capacidade técnica e de arquitetura em nível Pleno.
+    * Disciplina e foco de estudo de nível Sênior.
+    * Ownership e responsabilidade sobre o próprio código.
+    * Inteligência social para navegar no ambiente de trabalho atual.
+
+* **Gaps Estratégicos:**
+    * **Presença Pública Nula:** Não produz conteúdo ("Produtor 0 vs. Consumidor 100") e não possui um projeto-vitrine público e de qualidade para provar suas habilidades ("Show Your Work").
+    * **Networking Inexistente:** Sua rede de contatos é passiva e não contribuirá para seus objetivos de carreira mais ambiciosos.
+    * **Inglês de Conversação:** A barreira mais concreta que o impede de acessar o mercado internacional.

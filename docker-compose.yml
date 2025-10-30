@@ -1,0 +1,13 @@
+services:
+  web:
+    build: .
+    container_name: blog-eleventy
+    restart: unless-stopped
+    networks:
+      - blog-network
+
+networks:
+  blog-network:
+    name: blog_default
+
+

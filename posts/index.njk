@@ -1,0 +1,17 @@
+---
+title: "Todos os posts"
+layout: "layout.njk"
+---
+
+<h1>Todos os posts</h1>
+
+<ul class="archive-list">
+{%- for post in collections.post | reverse -%}
+  <li>
+    <time class="archive-date" datetime="{{ post.date.toISOString() }}">{{ post.date.toLocaleDateString('pt-BR') }}</time>
+    <a class="archive-title" href="{{ post.url }}">{{ post.data.title }}</a>
+  </li>
+{%- endfor -%}
+</ul>
+
+

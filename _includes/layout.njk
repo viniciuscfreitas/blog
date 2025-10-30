@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <meta name="description" content="{{ description or 'Blog minimalista focado em conteúdo e leitura, com design moderno e tipografia elegante.' }}">
+    <meta name="author" content="Vini">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="{{ title }}">
+    <meta property="og:description" content="{{ description or 'Blog minimalista focado em conteúdo e leitura, com design moderno e tipografia elegante.' }}">
+    <meta property="og:url" content="{{ siteUrl }}{{ page.url }}">
+    <meta property="og:image" content="{{ ogImage or (siteUrl + '/img/foto.png') }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ title }}">
+    <meta name="twitter:description" content="{{ description or 'Blog minimalista focado em conteúdo e leitura, com design moderno e tipografia elegante.' }}">
+    <meta name="twitter:image" content="{{ ogImage or (siteUrl + '/img/foto.png') }}">
+    <link rel="canonical" href="{{ siteUrl }}{{ page.url }}">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="pt_BR">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="/img/foto.png">
+    <link rel="shortcut icon" type="image/jpeg" href="/img/foto.png">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <main>
+        {% if page.url != '/' %}
+        <div class="blog-header">
+            <div class="header-content">
+                <img src="/img/foto.png" alt="Vinicius Freitas" class="profile-photo" loading="lazy">
+                <div class="header-text">
+                    <h1>Vinicius Freitas</h1>
+                    <p class="blog-subtitle">Dev fullstack. Construo sistemas simples que funcionam.</p>
+                    <p class="blog-subtitle">Escrevo sobre engenharia pragmática, cases de carreira e finanças.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {{ content | safe }}
+        {% if tags and ('post' in tags) %}
+        <p><a class="back-home" href="/">← Voltar para a lista</a></p>
+        {% endif %}
+    </main>
+</body>
+</html>
