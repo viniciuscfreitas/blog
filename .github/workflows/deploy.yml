@@ -1,0 +1,38 @@
+name: Deploy blog to server
+
+on:
+  push:
+    branches: [ "main" ]
+
+concurrency:
+  group: deploy-blog
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (for context)
+        uses: actions/checkout@v4
+
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -euo pipefail
+            mkdir -p ~/www/blog
+            cd ~/www/blog
+            if [ ! -d .git ]; then
+              git clone https://github.com/viniciuscfreitas/blog.git .
+            else
+              git fetch --all --prune
+              git reset --hard origin/main
+            fi
+            docker compose up -d --build
+            docker network connect blog_default nginx-proxy-manager-app-1 || true
+            docker image prune -f || true
+
+
