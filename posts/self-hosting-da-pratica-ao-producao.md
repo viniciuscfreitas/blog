@@ -40,6 +40,7 @@ Usei um proxy reverso com emissão automática de certificados (Let's Encrypt). 
 
 Idempotência simples: o servidor é um espelho da `main`.
 
+{% raw %}
 ```yaml
 # .github/workflows/deploy.yml (trecho)
 on:
@@ -70,6 +71,7 @@ jobs:
             docker compose up -d --build
             docker image prune -f || true
 ```
+{% endraw %}
 
 Detalhes que fizeram diferença:
 
@@ -100,6 +102,7 @@ Lição: **parei de tentar pilotar um avião de caça para atravessar a rua**. C
 
 ### publicar um novo app
 
+{% raw %}
 ```bash
 git clone https://github.com/<usuario>/<app>.git ~/www/<app>
 cd ~/www/<app>
@@ -107,6 +110,7 @@ docker compose up -d --build
 # conectar o proxy reverso à rede do app, se necessário
 docker network connect <app>_default <container-do-proxy> || true
 ```
+{% endraw %}
 
 Criar host no proxy: apontar `app.<meu-dominio>` → `http://<nome-do-servico>:<porta>`, solicitar certificado e forçar HTTPS.
 
