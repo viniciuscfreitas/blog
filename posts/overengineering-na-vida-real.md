@@ -54,7 +54,7 @@ function formatPrice(value, { currency = 'BRL', locale = 'pt-BR' } = {}) {
 }
 ```
 
-Por quê: happy path claro e uma saída para entrada inválida. Menos branches, menos bug.
+Por quê: happy path claro e uma saída pra entrada inválida. Menos branches, menos bug.
 
 ### 2) abstração prematura vs função simples
 
@@ -139,12 +139,12 @@ Para cada feature, busco o 20% que entrega 80% do valor:
 - Métrica mínima para validar se já resolveu o problema.
 - Só então cubro casos raros se o uso justificar.
 
-### 6) simplicidade e testability
+### 6) simplicidade e testabilidade
 
-Funções pequenas, puras e sem side effects são fáceis de testar. Não preciso mockar o mundo.
+Funções pequenas, puras e sem side effects são fáceis de testar. Não preciso mockar tudo.
 
-- Antes: muitos if/else e dependência de estado externo → você precisa escrever muitos testes para cobrir todos os caminhos.
-- Depois: input validation e um único happy path → você testa só a I/O normal e um edge case principal.
+- Antes: muitos if/else e dependência de estado externo → precisa escrever muitos testes pra cobrir todos caminhos.
+- Depois: input validation e um único happy path → testa só a I/O normal e um edge case principal.
 
 ### 7) dados simples > abstrações
 
@@ -174,9 +174,9 @@ Eu removi uma “service layer” que só repassava chamadas. O código ficou me
 
 ### 9) notas rápidas
 
-- Monólito modular antes de microservices. Só divida quando a dor for real (equipes/processo/escala).
+- Monólito modular antes de microservices. Só divida quando a dor for real (equipes, processo ou escala).
 - Prefira tecnologia estável e comprovada. Menos surpresa = menos bug.
-- Concorrência: executar tarefas ao mesmo tempo. Útil, mas traz race conditions e deadlocks. Use quando medir ganho real; prefira filas/assíncrono simples.
+- Concorrência: executar tarefas ao mesmo tempo. Útil, mas traz race conditions e deadlocks. Use quando medir ganho real; prefira filas ou assíncrono simples.
 
 Entregas mais rápidas. Menos bugs. Código menor e legível. Quando preciso crescer, refatoro em cima de algo simples, não de um castelo de abstrações. O débito técnico fica menor e mais barato de pagar.
 
@@ -187,5 +187,7 @@ Entregas mais rápidas. Menos bugs. Código menor e legível. Quando preciso cre
 - DRY com regra de 3.
 - Pareto: entregue o 80% que resolve o problema.
 - Nome claro, função pequena, efeito colateral zero.
+
+**Mas onde traçar a linha entre simplificar e quebrar correção básica?** Descobri que a resposta não era simples. [Continue lendo a parte 2 →](posts/worse-is-better-o-debate-que-mudou-como-penso-simplicidade)
 
 

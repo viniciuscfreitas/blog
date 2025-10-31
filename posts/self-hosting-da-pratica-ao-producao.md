@@ -7,7 +7,7 @@ description: "Como montei um ambiente de self‑hosting simples, automatizado e 
 permalink: "/posts/self-hosting-da-pratica-ao-producao/"
 ---
 
-Eu gosto de aprender construindo. Self‑hosting foi meu laboratório: uma maneira de colocar projetos no ar, testar ideias rápido e ainda aplicar fundamentos (automação, isolamento, idempotência) sem transformar tudo em tese.
+Eu gosto de aprender construindo. Self‑hosting foi meu laboratório: uma forma de colocar projetos no ar, testar ideias rápido e ainda aplicar fundamentos (automação, isolamento, idempotência) sem transformar tudo em tese.
 
 Comecei com a tentação do Kubernetes e da Arquitetura Perfeita. O que funcionou foi o oposto: **compose + proxy reverso + CI/CD via SSH**. Simples, previsível, barato de operar. Quando doeu, eu melhorei um componente por vez.
 
@@ -20,19 +20,19 @@ Eu queria hospedar projetos pessoais e pequenos produtos (blog, portal do client
 Eu quebrei o problema em pedaços menores e mensuráveis:
 
 1. Colocar um serviço HTTP no ar com TLS de graça.
-2. Automatizar o deploy para evitar “funcionou na minha máquina”. 
-3. Padronizar rede e nomes para escalar serviços sem caos.
+2. Automatizar o deploy pra evitar "funcionou na minha máquina". 
+3. Padronizar rede e nomes pra escalar serviços sem caos.
 4. Endurecer o básico de segurança e preparar backup.
 
 A tecnologia é meio. O objetivo era entregar valor rápido e repetir com confiança.
 
 ## implementação (decisões‑chave)
 
-### 1) orquestração mínima: Docker Compose
+### 1) orquestração mínima: Compose
 
-Escolha óbvia para 1 a N serviços simples. Um `docker-compose.yml` por app, volumes nomeados para estado e upgrades previsíveis. K8s ficou fora do MVP por complexidade operacional desnecessária.
+Escolha óbvia pra 1 a N serviços simples. Um `docker-compose.yml` por app, volumes nomeados pra estado e upgrades previsíveis. K8s ficou fora do MVP por complexidade operacional desnecessária.
 
-### 2) entrada única: proxy reverso com TLS
+### 2) entrada única: proxy reverso com TLS automático
 
 Usei um proxy reverso com emissão automática de certificados (Let's Encrypt). Cada serviço roda em rede bridge e é exposto por hostname. Ganho: TLS, roteamento por domínio, headers de segurança e logs agrupados.
 
@@ -75,17 +75,17 @@ jobs:
 
 Detalhes que fizeram diferença:
 
-- `git reset --hard origin/main` evita drift. 
-- `set -euo pipefail` mata o deploy na primeira falha. 
+- `git reset --hard origin/main` evita drift.
+- `set -euo pipefail` mata o deploy na primeira falha.
 - Chave SSH dedicada de CI com escopo mínimo.
 
 ### 4) rede e nomes previsíveis
 
-Cada app tem sua rede default do Compose. O proxy reverso é conectado a essas redes para resolver os containers por nome do serviço. Evita IPs fixos e configuração manual frágil.
+Cada app tem sua rede default do Compose. O proxy reverso é conectado a essas redes pra resolver os containers por nome do serviço. Evita IPs fixos e configuração manual frágil.
 
 ### 5) segurança básica primeiro
 
-SSH apenas com chave, atualização automática de certificados, forçar HTTPS, e acesso administrativo do proxy restrito (firewall/VPN). Fail2ban no host para conter brute force.
+SSH apenas com chave, atualização automática de certificados, forçar HTTPS, e acesso administrativo do proxy restrito (firewall ou VPN). Fail2ban no host pra conter brute force.
 
 ## o resultado (e a lição)
 
