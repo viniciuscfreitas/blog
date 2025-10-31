@@ -9,36 +9,27 @@ permalink: "/posts/self-hosting-da-pratica-ao-producao/"
 
 Eu gosto de aprender construindo. Self‑hosting foi meu laboratório: uma forma de colocar projetos no ar, testar ideias rápido e ainda aplicar fundamentos (automação, isolamento, idempotência) sem transformar tudo em tese.
 
-Comecei com a tentação do Kubernetes e da Arquitetura Perfeita. O que funcionou foi o oposto: **compose + proxy reverso + CI/CD via SSH**. Simples, previsível, barato de operar. Quando doeu, eu melhorei um componente por vez.
+Meu primeiro projeto real foi o **vetqueue**: um portal web para o pet shop da minha família. Precisava de controle total, custo baixo e liberdade pra iterar sem pedir permissão. Vercel e Heroku eram simples, mas eu queria entender a infraestrutura. Comecei lendo sobre Kubernetes, Terraform e as Arquiteturas Perfeitas. O que funcionou foi o oposto: **compose + proxy reverso + CI/CD via SSH**. Simples, previsível, quase de graça.
 
-## o problema (a dor real)
+## primeiros passos (a infra básica)
 
-Eu queria hospedar projetos pessoais e pequenos produtos (blog, portal do cliente) sem depender de SaaS caro, e com controle total. Restrições: tempo, custo, pouca mão e necessidade de aprender na prática sem derrubar nada.
+Provisionei uma Droplet na DigitalOcean usando o free trial: 1GB RAM, 1 vCPU. Registrei o domínio `vinicius.xyz` na GoDaddy. Atualizei o servidor, desativei autenticação por senha no SSH e deixei só chaves.
 
-## a jornada (o processo do arquiteto)
+A escolha do proxy foi pragmática. Eu queria TLS automático sem editá arquivos de configuração do Nginx manualmente. **Nginx Proxy Manager** oferece interface web e integração com Let's Encrypt. Deslize o formulário, clique em solicitar certificado e está no ar. Perfeito pra MVP.
 
-Eu quebrei o problema em pedaços menores e mensuráveis:
+Deployi o NPM via Docker Compose numa rede isolada. Pedi o primeiro certificado SSL para o domínio. Funcionou na primeira tentativa.
 
-1. Colocar um serviço HTTP no ar com TLS de graça.
-2. Automatizar o deploy pra evitar "funcionou na minha máquina". 
-3. Padronizar rede e nomes pra escalar serviços sem caos.
-4. Endurecer o básico de segurança e preparar backup.
+## o primeiro app (manual e doloroso)
 
-A tecnologia é meio. O objetivo era entregar valor rápido e repetir com confiança.
+Clonei o repositório do vetqueue em `~/www/vetqueue`, rodei `docker compose up -d --build`. Conectei a rede do Compose ao container do NPM com `docker network connect`. Criei host no NPM apontando para o serviço na porta interna. 30 minutos depois o portal estava no ar com HTTPS.
 
-## implementação (decisões‑chave)
+Deixei rodando manual por 10 dias. Cada mudança era SSH + pull + rebuild. Funcionava, mas cansativo.
 
-### 1) orquestração mínima: Compose
+## o catalisador (automatizar depois de sentir a dor)
 
-Escolha óbvia pra 1 a N serviços simples. Um `docker-compose.yml` por app, volumes nomeados pra estado e upgrades previsíveis. K8s ficou fora do MVP por complexidade operacional desnecessária.
+O blog foi o segundo projeto e acionou a automação. Se não houvesse automação, seria manual de novo.
 
-### 2) entrada única: proxy reverso com TLS automático
-
-Usei um proxy reverso com emissão automática de certificados (Let's Encrypt). Cada serviço roda em rede bridge e é exposto por hostname. Ganho: TLS, roteamento por domínio, headers de segurança e logs agrupados.
-
-### 3) automação: CI/CD via GitHub Actions + SSH
-
-Idempotência simples: o servidor é um espelho da `main`.
+Criei um workflow no GitHub Actions que roda em push para `main`:
 
 {% raw %}
 ```yaml
@@ -73,101 +64,46 @@ jobs:
 ```
 {% endraw %}
 
-Detalhes que fizeram diferença:
+O workflow clona/atualiza o repositório, faz reset hard para evitar drift e faz rebuild das imagens. `set -euo pipefail` interrompe na primeira falha. Idempotente.
 
-- `git reset --hard origin/main` evita drift.
-- `set -euo pipefail` mata o deploy na primeira falha.
-- Chave SSH dedicada de CI com escopo mínimo.
+## o que quebrou (e como corrigi)
 
-### 4) rede e nomes previsíveis
+Primeira execução: `ssh: handshake failed`. A chave pública estava no servidor e os secrets corretos no GitHub. Estava certo.
 
-Cada app tem sua rede default do Compose. O proxy reverso é conectado a essas redes pra resolver os containers por nome do serviço. Evita IPs fixos e configuração manual frágil.
+O problema: ao copiar a privada para os secrets, faltaram os headers `-----BEGIN OPENSSH PRIVATE KEY-----` e `-----END OPENSSH PRIVATE KEY-----`. Sem eles, nada funciona. Colei a chave completa e funcionou.
 
-### 5) segurança básica primeiro
+Segundo erro: `docker image prune -a` removeu imagens úteis. A flag `-a` apaga imagens não usadas, inclusive básicas. Troquei para `-f`, que remove apenas “dangling”.
 
-SSH apenas com chave, atualização automática de certificados, forçar HTTPS, e acesso administrativo do proxy restrito (firewall ou VPN). Fail2ban no host pra conter brute force.
+Terceiro: percebi o painel do NPM exposto publicamente. Não vi acesso, mas bastava DNS + brute force para a senha padrão. Restringi por firewall/VPN.
 
-## o resultado (e a lição)
+Quarto: `ssh-keygen` no Windows falhou com `No such file or directory`. Não existia `~/.ssh`. Criei com `mkdir` e seguiu.
 
-Eu tenho um ambiente que publica novos serviços em minutos:
+## o estado atual (pragmático e limitado)
 
-1. Clono o repositório em `~/www/<app>`.
-2. `docker compose up -d --build`.
-3. Conecto a rede do app ao proxy reverso e crio o host com o domínio.
-4. Ativo o workflow de deploy e nunca mais faço `ssh` manual para atualizar.
+2 apps rodando: vetqueue e blog. Vetqueue manual; blog automatizado.
 
-Lição: **parei de tentar pilotar um avião de caça para atravessar a rua**. Compose entrega 80% do valor com 20% do custo cognitivo. O resto eu coloco quando doer.
+Para adicionar um novo app:
+1. Clone em `~/www/<app>`.
+2. `docker compose up -d`.
+3. Conecte a rede ao NPM e configure o host.
+4. Se precisar de CI/CD, crie o workflow.
 
-## runbooks que eu realmente uso
+Com o NPM configurado, leva 20–30 minutos.
 
-### publicar um novo app
+O vetqueue segue manual; o blog disparou a automação. Evolução incremental e funcional.
 
-{% raw %}
-```bash
-git clone https://github.com/<usuario>/<app>.git ~/www/<app>
-cd ~/www/<app>
-docker compose up -d --build
-# conectar o proxy reverso à rede do app, se necessário
-docker network connect <app>_default <container-do-proxy> || true
-```
-{% endraw %}
+## lições aplicáveis
 
-Criar host no proxy: apontar `app.<meu-dominio>` → `http://<nome-do-servico>:<porta>`, solicitar certificado e forçar HTTPS.
+Evite complexidade prematura. Compose cobre 80% com baixo custo cognitivo. K8s chega quando o problema real justificar.
 
-### atualizar um app (CI/CD)
+Automatize após sentir a dor; automatizar cedo cria abstrações sem necessidade.
 
-{% raw %}
-```bash
-git push origin main
-# pipeline executa: fetch, reset hard, compose up --build
-```
-{% endraw %}
+Segurança mínima: chaves SSH, HTTPS, certificados automáticos e acesso administrativo restrito. O resto quando precisar.
 
-### diagnosticar rápido
+Transparência: free trial, 2 apps, um manual. Não vire “perfeito” se não for.
 
-{% raw %}
-```bash
-docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Ports}}'
-docker logs -n 200 <servico>
-docker network ls
-docker inspect <app>_default | jq '.[0].Containers | keys'
-```
-{% endraw %}
+## conclusão
 
-## o que deu errado (e como corrigi)
+Self‑hosting não é sobre a ferramenta, é sobre reduzir atrito entre ideia e produção. Entregue o simples primeiro; complexidade quando for inevitável.
 
-- Chave SSH no Secret sem os headers `BEGIN/END` → handshake falhou. Corrigi colando a chave completa.
-- `docker image prune -a` removeu imagens úteis. Mantive apenas `-f` para dangling.
-- Expor o painel do proxy publicamente é pedir problema. Restrição por firewall/VPN resolveu no MVP.
-
-## checklist de self‑hosting mínimo viável
-
-- Domínio e DNS controlados.
-- VM atualizada e SSH por chave.
-- Proxy reverso com TLS automático.
-- Compose por serviço, volumes nomeados, nomes de serviço claros.
-- CI/CD idempotente via SSH.
-- Backup diário de volumes críticos e teste de restore mensal.
-- Monitoramento de uptime básico.
-
-## próximos passos (quando doer)
-
-- Backup/DR mais sólido: snapshots versionados em storage externo e restore automatizado.
-- Observabilidade: métricas e alertas mínimos (uptime, certificado, espaço em disco).
-- Acesso administrativo via VPN/Bastion.
-- Padronizar labels e redes para auto‑descoberta no proxy.
-- Se a orquestração ficar complexa: K3s/Kubernetes, mas só com justificativa real.
-
-## conclusão (framework mental)
-
-Self‑hosting não é sobre a ferramenta, é sobre reduzir atrito entre ideia e produção. Meu modelo mental hoje:
-
-1. Entregue o caminho feliz com Compose.
-2. Automação antes de otimização.
-3. Segurança básica sempre on.
-4. Meça a dor antes de adicionar complexidade.
-5. Evolua por fatias: um componente por vez.
-
-Eu não desliguei o interesse por arquiteturas mais complexas. Eu só coloquei uma regra à frente: **simplicidade que entrega**. Quando a realidade pedir mais, eu vou saber exatamente onde apertar.
-
-
+Ainda penso em K8s. Por ora, o que entrega é suficiente.
